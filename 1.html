@@ -5,13 +5,36 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="https://d3js.org/d3.v6.min.js"></script>
 </head>
 <body>
+    <script src="https://d3js.org/d3.v6.min.js"></script>    
     <h1>scores of students</h1>
-    <svg id = 'chart',width='200' height = '200' style ="border : black 1px solid">
-
+    <svg height="1000" width="1000">
+        <rect x="0" y="0" width="100" height="50"></rect> 
+        <rect x="0" y="100" width="200" height="50"></rect> 
+        <rect x="0" y="200" width="300" height="50"></rect>
     </svg>
+    <script>
+        let my_data = [1,2,3];
+        let oldData = [
+            {name: 'A', value: 10}, 
+            {name: 'B', value: 20}, 
+            {name: 'C', value: 15}
+        ];
+        let newData = [
+            {name: 'B', value: 10}, 
+            {name: 'C', value: 15}, 
+            {name: 'D', value: 5}
+        ];
+
+        // object 에서는 key 가 name 인가보다.
+    let test = d3.selectAll('rect')
+                .data(my_data);
+
+        // selection.data 에서 첫 번째 인자를 붙여줄 데이터, 그리고 key값은
+        // 그에 맞는 이름으로 반환하겠다는 뜻
+    console.log(test);
+</script>
 </body>
-<script src ="1.js"></script>
+
 </html>
