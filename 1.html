@@ -7,34 +7,51 @@
     <title>Document</title>
 </head>
 <body>
+    <script src = './1.js'></script>
     <script src="https://d3js.org/d3.v6.min.js"></script>    
-    <h1>scores of students</h1>
+    <h1>Movie circle</h1>
     <svg height="1000" width="1000">
-        <rect x="0" y="0" width="100" height="50"></rect> 
-        <rect x="0" y="100" width="200" height="50"></rect> 
-        <rect x="0" y="200" width="300" height="50"></rect>
+    
     </svg>
     <script>
-        let my_data = [1,2,3];
-        let oldData = [
-            {name: 'A', value: 10}, 
-            {name: 'B', value: 20}, 
-            {name: 'C', value: 15}
-        ];
-        let newData = [
-            {name: 'B', value: 10}, 
-            {name: 'C', value: 15}, 
-            {name: 'D', value: 5}
-        ];
+        data.forEach(function(d){
+            d.us_gross = parseFloat(d.us_gross);
+            d.rotten_rating = parseFloat(d.rotten_rating);
+        });
 
-        // object 에서는 key 가 name 인가보다.
-    let test = d3.selectAll('rect')
-                .data(my_data);
+        let svg = d3.select('svg');
+        let width = 500;
+        let height = 500;
 
-        // selection.data 에서 첫 번째 인자를 붙여줄 데이터, 그리고 key값은
-        // 그에 맞는 이름으로 반환하겠다는 뜻
-    console.log(test);
-</script>
+        let x = d3.scaleLinear()
+                    .domain([
+                        d3.min(data,d=>d.rotten_rating),
+                        d3.max(data,d=>d.rotten_rating)
+                    ]
+                    )
+                    .range([0, width]);
+
+        let y = d3.scaleLinear()
+                    .domain([
+                        d3.min(data,d=>d.us_gross),
+                        d3.max(data,d=>d.us_gross)
+                    ])
+                    .range([height,0]);
+
+
+        svg
+            .selectAll('circle')
+            .data(data)
+            .enter()
+                .append('circle')
+                .attr('r',3.5)
+                .attr('cx',d=>x(d.rotten_rating))
+                .attr('cy',d=>y(d.us_gross));
+
+        // code 세세한 걸 보지 말고 이에 관련한 flow 를 봐보기!
+    </script>
 </body>
 
 </html>
+
+
