@@ -7,24 +7,81 @@
     <title>Document</title>
 </head>
 <body>
-    <svg height = '1000'width = '1000'>
-
-    </svg>
     <script src="https://d3js.org/d3.v6.min.js"></script>    
+    <script src = "1.js"></script>
+    <div id = "plot"></div>
     <script>
+        data.forEach(function(d){
+            d.us_gross = parseFloat(d.us_gross);
+            d.rotten_rating = parseFloat(d.rotten_rating); 
+        })
+
+        // 1. 숫자로 사용할 데이터들 먼저 처리하고
+
+        // 2. 들어갈 공간을 정한 다음에
+        let svgWidth = 550;
+        let svgHeight = 550;
+        let margin = {top:20, right :10, bottom:30, left: 40};
+        let width = svgWidth - margin.left - margin.right;
+        let height = svgHeight - margin.top - margin.bottom;
+        
+        // 3. 어느 정도 공간안에 찍을 것인지 고민한다.
+        let svg = d3.select('#plot')
+                    .append('svg')
+                        .attr('width',svgWidth)
+                        .attr('height',svgHeight)
+                        .append('g')
+                            .attr('transform',`translate(${margin.left},${margin.top})`);
+        
+        // 축을 어느만큼 이동하는지 알 수 있음
+        
+        // 화면안에 어떻게 찍힐 것인지 범위를 고민한 다음
+        let x = d3.scaleLinear()
+                    .domain([
+                        d3.min(data,d=>d.rotten_rating),
+                        d3.max(data,d=>d.rotten_rating)
+                    ])
+                    .range([0,width]);
+
+                    // domain 인 정의역을 바탕으로 함숫값을 치역 range 를 받음
+        
+        let y = d3.scaleLinear()
+                    .domain([
+                        d3.min(data,d=>d.us_gross),
+                        d3.max(data,d=>d.us_gross)
+                    ])
+                    .range([height,0]);
+        
         let xAxis = d3.axisBottom(x);
         let yAxis = d3.axisLeft(y);
+      
+        // 실제 데이터를 받아 찍힐 점과
+        svg
+            .selectAll('circle')
+            .data(data)
+            .enter()
+                .append('circle')
+                .attr('r', 3.5)
+                .attr('cx', d => x(d.rotten_rating))
+                .attr('cy',d =>y(d.us_gross));
 
+        // 각각마다의 축을 정해서 호출
+        
         svg
             .append('g')
             .attr('transform',`translate(0,${height})`)
             .call(xAxis);
-
+        
         svg
             .append('g')
-            .attr(yAxis);
+            .call(yAxis);
+        
+        // 축을 부르는 과정이 있어야 함
 
+
+
+        // forEach 는 return 할 결과값만 가져감
+       
     </script>
-    
 </body>
 </html>
