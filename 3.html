@@ -10,15 +10,35 @@
 <script src="https://d3js.org/d3.v6.min.js"></script> 
 <script>
     d3.select('rect')
-        .on('mouseenter',function(){
+        .on('mouseenter.v1',function(){
             d3.select(this)
                 .style('fill','red');
         })
-        .on('mouseleave',function(){
+        .on('mouseenter.v2',function(){
+            d3.select(this)
+                .attr('width',100)
+                .attr('height',100);
+        })
+        .on('mouseleave.v1',function(){
             d3.select(this)
                 .style('fill','blue');
         })
+        .on('mouseleave.v2',function(){
+            d3.select(this)
+                .attr('width',50)
+                .attr('height',50)
+        })
+        .on('click',(event,d)=>{
+            const nodes = event.currentTarget
+            // nodes 에 대한 정의를 알아야 하는데, select 된 이벤트의 요소들의 배열이라고 정의된다.
+            console.log(nodes);
+            console.log(typeof nodes);
+            // 객체로 넘어오는 것을 알 수 있다. 
+        }
+        )
 
-        // 가장 이벤트의 뼈대구조 
+        // 가장 이벤트의 뼈대구조
+
+        // 저 function 쓸 때 arrow function 쓰지 말기
 </script>
 </body>
