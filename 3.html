@@ -28,12 +28,12 @@
                 .attr('width',50)
                 .attr('height',50)
         })
-        .on('click',(event,d)=>{
-            const nodes = event.currentTarget
-            // nodes 에 대한 정의를 알아야 하는데, select 된 이벤트의 요소들의 배열이라고 정의된다.
+        .on('click',function(event,d){
+            const nodes = event.currentTarget;
             console.log(nodes);
-            console.log(typeof nodes);
+
             // 객체로 넘어오는 것을 알 수 있다. 
+            // 여기서 다 extract 할 수 있나 보다.
         }
         )
 
