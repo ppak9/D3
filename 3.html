@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>Event</title>
+</head>
+<body>
+<svg height="500">
+    <rect transform="translate(100, 100)" width="50" height="50"></rect> 
+</svg>
+<script src="https://d3js.org/d3.v6.min.js"></script> 
+<script>
+    d3.select('rect')
+        .on('mouseenter',function(){
+            d3.select(this)
+                .style('fill','red');
+        })
+        .on('mouseleave',function(){
+            d3.select(this)
+                .style('fill','blue');
+        })
+
+        // 가장 이벤트의 뼈대구조 
+</script>
+</body>

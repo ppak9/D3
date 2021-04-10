@@ -54,7 +54,11 @@
         
         let xAxis = d3.axisBottom(x);
         let yAxis = d3.axisLeft(y);
-      
+
+
+        let color = d3.scaleOrdinal()
+                        .domain(['전체관람가', '7세이상', '15세이상', '19세이상'])
+                        .range(['#3366cc', '#109618', '#ff9900', '#dc3912'])
         // 실제 데이터를 받아 찍힐 점과
         svg
             .selectAll('circle')
@@ -63,7 +67,8 @@
                 .append('circle')
                 .attr('r', 3.5)
                 .attr('cx', d => x(d.rotten_rating))
-                .attr('cy',d =>y(d.us_gross));
+                .attr('cy',d =>y(d.us_gross))
+                .style('fill',d=>color(d.rating));
 
         // 각각마다의 축을 정해서 호출
         
