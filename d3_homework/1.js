@@ -16,6 +16,7 @@ function randomExtract(input_array){
 data.forEach(function(d){
     d.budget = parseFloat(d.budget);
     d.worldwide_gross = parseFloat(d.worldwide_gross);
+    //append for another data 
     testarray.push(d.budget);
     testarray2.push(d.worldwide_gross); 
 })
@@ -23,6 +24,8 @@ data.forEach(function(d){
 let dataX = randomExtract(testarray);
 let dataY = randomExtract(testarray2);
 let finalResult = []
+
+// create new Data object that similar data.js
 
 for(var i = 0; i < dataX.length; i++){
     finalResult.push({
