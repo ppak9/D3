@@ -1,8 +1,8 @@
 // build Data random extract
 let testarray = [];
 let testarray2 = [];
-let svgWidth = 10000;
-let svgHeight = 10000;
+let svgWidth = 550;
+let svgHeight = 550;
 let margin = { top: 20, right: 10, bottom: 30, left: 40 };
 let width = svgWidth - margin.left - margin.right;
 let height = svgHeight - margin.top - margin.bottom;
@@ -32,7 +32,6 @@ for(var i = 0; i < dataX.length; i++){
 }
 
 console.log(finalResult);
-// finalResult.push(newData);
 
 let x = d3.scaleLinear()
             .domain([
@@ -51,16 +50,15 @@ let y = d3.scaleLinear()
 
 let svg = d3.select('#plot')
             .append('svg')
-                .attr('width',width)
-                .attr('height',height)
+                .attr('width',svgWidth)
+                .attr('height',svgHeight)
                 .append('g')
                     .attr('transform',`translate(${margin.left},${margin.top})`)
 
                     
 let circle = svg.selectAll('circle')
                 .data(finalResult)
-                .enter()
-                    .append('circle')
+                .join('circle')
                     .attr('r', 3.5)
                     .attr('cx',d=>x(d.randX))
                     .attr('cy',d=>y(d.randY));
@@ -68,13 +66,16 @@ let circle = svg.selectAll('circle')
 
 
 // display axis, define X axis as a number and the y too
-// let x = d3.scaleLinear()
-//             .domain(dataX)
-//             .range([0,svg]);
 
-// let y = d3.scaleLinear()
-//             .domain(dataY)
-//             .range([height,0]);
+let xAxis = d3.axisBottom(x); 
+let yAxis = d3.axisLeft(y);
 
-// let xAxis = d3.axisBottom(x);
-// let yAxis = d3.axisLeft(y);
+
+    svg.append('g')
+        .attr('transform',`translate(0,${height})`)
+        .call(xAxis)
+
+    
+    svg.append('g')
+        .attr('transform',`translate(0,0)`)
+        .call(yAxis);
