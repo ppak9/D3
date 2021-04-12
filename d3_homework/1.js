@@ -37,7 +37,7 @@ for(var i = 0; i < dataX1.length; i++){
     });
 }
 
-// console.log(dataX2);
+// set data for second graph
 
 let current = null;
 let cnt = 0;
@@ -61,91 +61,86 @@ for(var i =0; i< dataX2.length;i++){
 console.log(finalResult2);
 
 
-// for(var i = 0; )
+let x1 = d3.scaleLinear()
+            .domain([
+                d3.min(finalResult, d => d.randX),
+                d3.max(finalResult, d => d.randX)
+            ])
+            .range([0,width]);
 
-// console.log(Object.keys(dataX2).length);
+let y1 = d3.scaleLinear()
+            .domain([
+                d3.min(finalResult, d => d.randY),
+                d3.max(finalResult, d => d.randY)
+              ])
+            .range([height,0]);
 
-// console.log(finalResult2)
-// // // remove duplicate things in the finalResult2 of X funciton
+let testarray = []
 
-// let x1 = d3.scaleLinear()
-//             .domain([
-//                 d3.min(finalResult, d => d.randX),
-//                 d3.max(finalResult, d => d.randX)
-//             ])
-//             .range([0,width]);
+let x2 = d3.scaleBand()
+            .domain([
+                finalResult2.map(function(d){
+                    return finalResult2.randX
+                })
+            ])
+            .range([0,width]);
 
-// let y1 = d3.scaleLinear()
-//             .domain([
-//                 d3.min(finalResult, d => d.randY),
-//                 d3.max(finalResult, d => d.randY)
-//               ])
-//             .range([height,0]);
+let y2 = d3.scaleLinear()
+            .domain([
+                d3.min(finalResult2, d => d.randY),
+                d3.max(finalResult2, d => d.randY)
+              ])
+            .range([height,0]);
 
-// let testarray = []
+let chart1 = d3.select('#plot')
+            .append('svg')
+                .attr('width',svgWidth)
+                .attr('height',svgHeight)
+                .append('g')
+                    .attr('transform',`translate(${margin.left},${margin.top})`)
 
-// let x2 = d3.scaleBand()
-//             .domain([
-                
-//             ])
-//             .range([0,width]);
-
-// let y2 = d3.scaleLinear()
-//             .domain([
-//                 d3.min(finalResult, d => d.randY),
-//                 d3.max(finalResult, d => d.randY)
-//               ])
-//             .range([height,0]);
-
-// let chart1 = d3.select('#plot')
-//             .append('svg')
-//                 .attr('width',svgWidth)
-//                 .attr('height',svgHeight)
-//                 .append('g')
-//                     .attr('transform',`translate(${margin.left},${margin.top})`)
-
-// let chart2 = d3.select('#plot')
-//                 .append('svg')
-//                     .attr('width',svgWidth)
-//                     .attr('height',svgHeight)
-//                     .append('g')
-//                         .attr('transform',`translate(${margin.left},${margin.top})`)
+let chart2 = d3.select('#plot')
+                .append('svg')
+                    .attr('width',svgWidth)
+                    .attr('height',svgHeight)
+                    .append('g')
+                        .attr('transform',`translate(${margin.left},${margin.top})`)
                         
                         
-// let circle = chart1.selectAll('circle')
-//                 .data(finalResult)
-//                 .join('circle')
-//                     .attr('r', 3.5)
-//                     .attr('cx',d=>x1(d.randX))
-//                     .attr('cy',d=>y1(d.randY));
+let circle = chart1.selectAll('circle')
+                .data(finalResult)
+                .join('circle')
+                    .attr('r', 3.5)
+                    .attr('cx',d=>x1(d.randX))
+                    .attr('cy',d=>y1(d.randY));
 
-// let bars = chart2.selectAll('rect')
-//                 .data(finalResult2)
-//                 .join('rect')
-//                     .attr('width',30)
-//                     .attr('height',d=>y2(d.randY))
-//                     .attr('trasnform',(d,i) =>`translate(${i*40},0)`);
+let bars = chart2.selectAll('rect')
+                .data(finalResult2)
+                .join('rect')
+                    .attr('width',30)
+                    .attr('height',d=>y2(d.randY))
+                    .attr('trasnform',(d,i) =>`translate(${i*40},0)`);
 
-// // display axis, define X axis as a number and the y too
+// display axis, define X axis as a number and the y too
 
-// let x1Axis = d3.axisBottom(x1).ticks(5) // ticks 는 범위 얘기하는 거임(5 =500이니 1당 100)
-// let y1Axis = d3.axisLeft(y1);
+let x1Axis = d3.axisBottom(x1) // ticks 는 범위 얘기하는 거임(5 =500이니 1당 100)
+let y1Axis = d3.axisLeft(y1);
 
-// let x2Axis = d3.axisBottom(x2).ticks(10)
-// let y2Axis = d3.axisLeft(y2);
+let x2Axis = d3.axisBottom(x2);
+let y2Axis = d3.axisLeft(y2);
 
-//     chart1.append('g')
-//         .attr('transform',`translate(0,${height})`)
-//         .call(x1Axis)
+    chart1.append('g')
+        .attr('transform',`translate(0,${height})`)
+        .call(x1Axis)
 
-//     chart1.append('g')
-//         .attr('transform',`translate(0,0)`)
-//         .call(y1Axis);
+    chart1.append('g')
+        .attr('transform',`translate(0,0)`)
+        .call(y1Axis);
 
-//     chart2.append('g')
-//         .attr('transform',`translate(0,${height})`)
-//         .call(x2Axis);
+    chart2.append('g')
+        .attr('transform',`translate(0,${height})`)
+        .call(x2Axis);
     
-//     chart2.append('g')
-//         .attr('transform',`translate(0,0)`)
-//         .call(y2Axis);
+    chart2.append('g')
+        .attr('transform',`translate(0,0)`)
+        .call(y2Axis);
