@@ -13,8 +13,8 @@ function randomExtract(input_array){
     return d3.shuffle(input_array).slice(0,100).sort()
 }
 
-let type1 = document.querySelector(".selectXbutton");
-let type2 = document.querySelector(".selectYbutton");
+let type1 = document.querySelector("#selectX");
+let type2 = document.querySelector("#selectY");
 let xValue;
 let yValue;
 
@@ -54,7 +54,7 @@ type1.addEventListener('change',(event)=>{
                 xArray.push(d.imdb_votes);
                 break;
         }
-   
+        
     })
 })
 
@@ -89,9 +89,13 @@ type2.addEventListener('change',(event)=>{
         }
     
     })
-    console.log(yArray);
-    yArray =[];
+
 
 })
 
+let xTest,yTest;
 
+xTest = randomExtract(xArray);
+yTest = randomExtract(yArray);
+
+console.log(xTest);
