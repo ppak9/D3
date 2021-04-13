@@ -20,7 +20,7 @@ data.forEach(function(d){
     //append for another data 
     x1array.push(d.budget);
     y1array.push(d.worldwide_gross); 
-    x2array.push(d.genre)
+    x2array.push(d.rating);
 })
 
 let dataX1 = randomExtract(x1array);
@@ -43,7 +43,7 @@ let current = null;
 let cnt = 0;
 
 for(var i =0; i< dataX2.length;i++){
-    if(dataX2[i] != current){
+    if(dataX2[i+1] != current){
         if(cnt > 0){
             finalResult2.push({
                 randX:current,
@@ -57,9 +57,6 @@ for(var i =0; i< dataX2.length;i++){
         cnt++;
     }
 }
-
-console.log(finalResult2);
-
 
 let x1 = d3.scaleLinear()
             .domain([
@@ -75,21 +72,19 @@ let y1 = d3.scaleLinear()
               ])
             .range([height,0]);
 
-let testarray = []
-
 let x2 = d3.scaleBand()
-            .domain([
-                finalResult2.map(function(d){
-                    return finalResult2.randX
-                })
-            ])
+            .domain(finalResult2.map(function(d){
+                return d.randX
+            }))
             .range([0,width]);
 
 let y2 = d3.scaleLinear()
-            .domain([
-                d3.min(finalResult2, d => d.randY),
-                d3.max(finalResult2, d => d.randY)
-              ])
+            .domain(
+                [
+                    0,
+                    d3.max(finalResult2,d=>d.randY)
+                ]       
+            )
             .range([height,0]);
 
 let chart1 = d3.select('#plot')
@@ -114,12 +109,15 @@ let circle = chart1.selectAll('circle')
                     .attr('cx',d=>x1(d.randX))
                     .attr('cy',d=>y1(d.randY));
 
-let bars = chart2.selectAll('rect')
-                .data(finalResult2)
-                .join('rect')
-                    .attr('width',30)
-                    .attr('height',d=>y2(d.randY))
-                    .attr('trasnform',(d,i) =>`translate(${i*40},0)`);
+
+let bars = chart2.selectAll('rect').data(finalResult2)
+
+bars.enter()
+    .append('rect')
+    .attr('x',(d)=>x2(d.randX))
+    .attr('y',(d)=>y2(d.randY))
+    .attr('width',x2.bandwidth())
+    .attr('height',(d)=>height- y2(d.randY));
 
 // display axis, define X axis as a number and the y too
 
@@ -134,7 +132,6 @@ let y2Axis = d3.axisLeft(y2);
         .call(x1Axis)
 
     chart1.append('g')
-        .attr('transform',`translate(0,0)`)
         .call(y1Axis);
 
     chart2.append('g')
@@ -142,5 +139,4 @@ let y2Axis = d3.axisLeft(y2);
         .call(x2Axis);
     
     chart2.append('g')
-        .attr('transform',`translate(0,0)`)
         .call(y2Axis);
