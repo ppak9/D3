@@ -140,3 +140,4 @@ let y2Axis = d3.axisLeft(y2);
     
     chart2.append('g')
         .call(y2Axis);
+                
