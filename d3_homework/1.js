@@ -72,6 +72,7 @@ let y1 = d3.scaleLinear()
               ])
             .range([height,0]);
 
+
 let x2 = d3.scaleBand()
             .domain(finalResult2.map(function(d){
                 return d.randX
@@ -128,10 +129,12 @@ let x2Axis = d3.axisBottom(x2);
 let y2Axis = d3.axisLeft(y2);
 
     chart1.append('g')
+        .attr('id','xaxis')
         .attr('transform',`translate(0,${height})`)
         .call(x1Axis)
 
     chart1.append('g')
+        .attr('id','yaxis')
         .call(y1Axis);
 
     chart2.append('g')
@@ -140,4 +143,63 @@ let y2Axis = d3.axisLeft(y2);
     
     chart2.append('g')
         .call(y2Axis);
-                
+
+function randomShuffle(Value,resultarray){
+    let testcase = d3.shuffle(Value);
+    for(var i = 0; i <100; i++){
+        resultarray[i] = parseFloat(testcase[i])
+    }
+}
+
+let firstX = [];
+let firstY = [];
+let shuffleX = [];
+let shuffleY = [];
+
+
+d3.select('#selectX').on('change',function(event){
+            let xValue = event.target.value;
+            let xDot = data.map((d)=>d[xValue]);
+            randomShuffle(xDot,shuffleX);
+            updateXchart(shuffleX);
+})
+    
+d3.select('#selectY').on('change',function(event){
+        let yValue = event.target.value;
+        let yDot = data.map((d)=>d[yValue]);
+        randomShuffle(yDot,shuffleY);
+        // console.log(shuffleY);
+        updateYchart(shuffleY);
+})
+
+function updateXchart(xData){
+
+x1.domain(d3.extent(xData))
+
+    
+    chart1.selectAll('circle')
+            .data(xData)
+            .transition()
+            .duration(780)
+            .attr('cx',d=>x1(d))
+    
+    chart1.selectAll('#xaxis')
+        .transition()
+        .call(d3.axisBottom(x1));
+}
+
+function updateYchart(yData){
+
+y1.domain(d3.extent(yData))
+
+    chart1.selectAll('circle')
+        .data(yData)
+        .transition()
+        .duration(780)
+        .attr('cy',d=>y1(d))
+    
+    chart1.selectAll('#yaxis')
+        .transition()
+        .call(d3.axisLeft(y1));
+} 
+  

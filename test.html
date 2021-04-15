@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+</head>
+<body>
+    
+</body>
+<script>
+   var svg = d3.select('body').append('svg');
+
+   svg
+    .attr('id','mySVG')
+    .attr('width', 500)
+    .attr('height', 500);
+
+    var test = [10,20,30]
+
+    var circle = svg.selectAll('circle')
+        .data([20,30,50])
+        .enter()
+        .append('circle')
+            .attr('cx', function(item) { return item; })
+            .attr('cy', function(item) { return item; })
+            .attr('r', 0)
+            .attr('fill', '#babdb6');
+
+    circle.transition()
+            .data([10,20,30])
+            .duration(100)
+            .attr('cx',function(item){
+                return item;
+            });
+
+
+
+</script>
+</html>

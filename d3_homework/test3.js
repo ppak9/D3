@@ -24,6 +24,7 @@ let slicedY = [];
 
 data.forEach(function(d){
     d.rotten_rating = parseFloat(d.rotten_rating);
+    // d.worldwide_gross = parseFloat(d.worldwide_gross)
 })
 
 
@@ -58,11 +59,18 @@ yTarget.addEventListener('change',function(event){
 //get test about the pre axis
 
 let preX = d3.scaleLinear()
-                .domain()
+                .domain(
+                    [
+                        d3.min(data,d=>d.rotten_rating),
+                        d3.max(data,d=>d.rotten_rating)
+                    ]
+                )
                 .range([0,width])
 
 let preY = d3.scaleLinear()
-                .domain()
+                .domain([
+                    
+                ])
                 .range([height,0])
 
 let chart1 = d3.select('#plot')
