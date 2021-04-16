@@ -31,11 +31,17 @@ function randomShuffle(Value,resultarray){
 
 // change function statement
 
+function test(){
+    d3.selectAll('.selection').remove();
+}
+
 d3.select('#selectX').on('change',function(event){
     let xValue = event.target.value;
     let xDot = data.map((d)=>d[xValue]);
     randomShuffle(xDot,shuffleX);
     updateXchart(shuffleX);
+    test();
+    brush();
 })
 
 d3.select('#selectY').on('change',function(event){
@@ -44,6 +50,8 @@ d3.select('#selectY').on('change',function(event){
     randomShuffle(yDot,shuffleY);
     // console.log(shuffleY);
     updateYchart(shuffleY);
+    test();
+    brush();
 })
 
 function updateXchart(xData){
@@ -51,6 +59,7 @@ function updateXchart(xData){
     x1.domain(d3.extent(xData))
         chart1.selectAll('circle')
                 .data(xData)
+                .join('circle')
                 .transition()
                 .duration(780)
                 .attr('cx',d=>x1(d))
@@ -66,6 +75,7 @@ function updateYchart(yData){
     
         chart1.selectAll('circle')
             .data(yData)
+            .join('circle')
             .transition()
             .duration(780)
             .attr('cy',d=>y1(d))
@@ -140,22 +150,47 @@ let circle = chart1.selectAll('circle')
         .attr('cx',d=>x1(d.randX))
         .attr('cy',d=>y1(d.randY));
 
+brush();
+
+function brush(){
+let brush = d3.brush()
+              .extent([[0,0],[width,height]])
+              .on('start brush end',brushed)
+
+
+chart1.append('g')
+        .call(brush)
+
+function brushed({selection}){
+    if(selection === null){
+        circle.classed('selected',false);
+    }
+    else{
+        let [[x0,y0],[x2,y2]]= selection;
+        circle.classed('selected',d=>{
+            let xCoord = x1(d.randX);
+            let yCoord = y1(d.randY);
+            return x0 <= xCoord && xCoord <= x2
+                && y0 <= yCoord && yCoord <= y2; 
+        });
+    }
+}
+}
+// draw graph2
 
 let current = null;
 let cnt = 0;
 
-// discrete data
-
 function datax2Count(data2C){
-    for(var i =0; i < Object.keys(data2C).length;i++){
-        if(data2C[i] != current){
+    for(var i =0; i < data2C.length;i++){
+        if(data2C[i+1] != current){
             if(cnt > 0){
                 finalX2.push({
                     randX:current,
                     randY:cnt
                 })
             }
-            current = data2C[i];
+            current = data2C[i+1];
             cnt = 1;
         }
         else{
@@ -164,7 +199,7 @@ function datax2Count(data2C){
     }
 }
 
-// first draw line
+// first value
     
 for(var i =0; i < dataX2.length;i++){
     if(dataX2[i+1] != current){
@@ -182,22 +217,32 @@ for(var i =0; i < dataX2.length;i++){
     }
 }
 
+first2chartValue.sort(function(a,b){
+    return b.randY - a.randY;
+}
+)
+
 // define chart 2 dummy
 
 let x2 = d3.scaleBand()
         .domain(first2chartValue.map(function(d){
             return d.randX
         }))
-        .range([0,width]);
+        .range([0,width])
+        .padding(0.3);
 
 let y2 = d3.scaleLinear()
         .domain(
             [
                 0,
                 d3.max(first2chartValue,d=>d.randY)
-            ]       
+            ]     
         )
         .range([height,0]);
+
+let color = d3.scaleOrdinal()
+                .domain(first2chartValue.map((d)=>d.randX))
+                .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"])
 
 let chart2 = d3.select('#plot')
                 .append('svg')
@@ -213,14 +258,14 @@ let y2Axis = d3.axisLeft(y2);
 
 let bars = chart2.selectAll('rect')
 
-// change updatebars
 bars.data(first2chartValue)
     .enter()
     .append('rect')
     .attr('x',(d)=>x2(d.randX))
     .attr('y',(d)=>y2(d.randY))
     .attr('width',x2.bandwidth())
-    .attr('height',(d)=>height- y2(d.randY));
+    .attr('height',(d)=>height- y2(d.randY))
+    .attr('id',(d)=>d.randX);
 
 chart2.append('g')
         .attr('id','x2axis')
@@ -231,23 +276,48 @@ chart2.append('g')
         .attr('id','y2axis')
         .call(y2Axis);
 
-// enter dummy
-// console.log(finalResult2.randX);
+chart1.data(first2chartValue)
+        .selectAll('circle')
+        .style('fill',(d)=>color(d.randX))
+        .attr('id',(d)=>d.randX);
 
+chart2.data(first2chartValue)
+    .selectAll('rect')
+    .style('fill',(d)=>color(d.randX))
+
+// 얘만 먹는 상태
+
+// chart2.selectAll('rect')
+//             .on('click',function(d){
+//                 d3.selectAll('.'+ d.id).classed('hover',true);
+//             })
+
+// var hover = document.querySelector('.hover');
+
+// console.log(hover)
+
+// enter dummy
 
 function updatebars(data){
+
+    data.sort(function(a,b){
+        return b.randY - a.randY;
+    }
+    );
 
     x2.domain(data.map(d=>d.randX));
     y2.domain([0,d3.max(data,d=>d.randY)]);
 
     chart2.selectAll('rect')
             .data(data)
+            .join('rect')
             .transition()
             .duration(780)
             .attr('x',(d)=>x2(d.randX))
             .attr('y',(d)=>y2(d.randY))
             .attr('width',x2.bandwidth())
-            .attr('height',(d)=>height- y2(d.randY));
+            .attr('height',(d) => height - y2(d.randY))
+            .style('fill',(d)=>color(d.randX));
 
     chart2.selectAll('#x2axis')
         .transition()
@@ -256,6 +326,10 @@ function updatebars(data){
     chart2.selectAll('#y2axis')
         .transition()
         .call(d3.axisLeft(y2));
+    
+    chart1.selectAll('circle')
+            .style('fill',(d)=>color(d.randX));
+    
 }
 
 d3.select('#select2').on('change',function(event){
@@ -264,7 +338,9 @@ d3.select('#select2').on('change',function(event){
     shuffleX2 = randomExtract(xDot);
     datax2Count(shuffleX2);
     console.log(finalX2);
-    updatebars(finalX2);   
+
+    //delete undefined or find new algorithm
+    updatebars(finalX2);
     finalX2 =[];
  
 })
